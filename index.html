@@ -1,205 +1,502 @@
-
 <!DOCTYPE html>
 <html lang="af">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V1.4</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:#06111b;
-color:white;
-}
-
-.app{padding:12px;max-width:1000px;margin:auto;}
-
-header{
-display:flex;justify-content:space-between;align-items:center;
-}
-
-.badge{background:#00c8ff;color:black;padding:6px 10px;border-radius:15px;}
-
-nav{
-display:flex;gap:6px;margin:10px 0;
-}
-nav button{
-flex:1;padding:10px;border:none;border-radius:10px;
-background:#123247;color:white;font-weight:bold;
-}
-nav button.active{background:#00c8ff;color:black;}
-
-.tab{display:none;}
-.tab.active{display:block;}
-
-.card{
-background:#0a1f2e;padding:12px;margin-bottom:10px;border-radius:12px;
-}
-
-.fish-grid{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;
-}
-
-.fish-card{
-background:#123247;padding:8px;border-radius:10px;text-align:center;cursor:pointer;
-}
-
-.fish-card img{
-width:100%;height:100px;object-fit:contain;background:#0d1a24;border-radius:8px;
-}
-
-input{
-width:100%;padding:8px;margin:8px 0;border-radius:8px;border:none;background:#102636;color:white;
-}
-
-button.action{
-padding:10px;border:none;border-radius:10px;background:#00c8ff;color:black;font-weight:bold;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fishing App Clean</title>
+  <style>
+    :root{
+      --bg:#06111b;
+      --panel:#0d1f2d;
+      --panel2:#123247;
+      --accent:#19c2ff;
+      --text:#f5fbff;
+      --muted:#9eb7c8;
+      --danger:#ff6b6b;
+      --ok:#48d17a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(180deg,#06111b,#03101a 60%,#02070d);
+      color:var(--text);
+    }
+    .app{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:14px;
+      gap:12px;
+    }
+    .topbar h1{
+      margin:0;
+      font-size:28px;
+    }
+    .subtitle{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .badge{
+      background:var(--accent);
+      color:#00131d;
+      font-weight:bold;
+      padding:8px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      margin-bottom:14px;
+    }
+    .tab-btn{
+      border:none;
+      background:var(--panel2);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+    .tab-btn.active{
+      background:var(--accent);
+      color:#00131d;
+    }
+    .tab{
+      display:none;
+    }
+    .tab.active{
+      display:block;
+    }
+    .card{
+      background:var(--panel);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .card h3{
+      margin:0 0 12px;
+    }
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+    .grid.two{
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    }
+    input, select, textarea{
+      width:100%;
+      padding:11px 12px;
+      border:none;
+      border-radius:12px;
+      background:#102636;
+      color:var(--text);
+      margin-top:6px;
+      margin-bottom:12px;
+    }
+    textarea{
+      min-height:96px;
+      resize:vertical;
+    }
+    .action{
+      border:none;
+      border-radius:12px;
+      background:var(--accent);
+      color:#00131d;
+      padding:12px 14px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .fish-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:12px;
+    }
+    .fish-card{
+      background:var(--panel2);
+      border-radius:14px;
+      overflow:hidden;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .fish-card .img{
+      height:120px;
+      background:#0b1822;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--muted);
+      font-size:13px;
+      padding:10px;
+      text-align:center;
+    }
+    .fish-card .body{
+      padding:10px;
+    }
+    .fish-card h4{
+      margin:0 0 8px;
+      font-size:16px;
+    }
+    .small{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .detail-photo{
+      height:180px;
+      background:#0b1822;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+    .pill-row{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:10px;
+      margin:12px 0;
+    }
+    .pill{
+      background:var(--panel2);
+      border-radius:12px;
+      padding:12px;
+    }
+    .ok{color:var(--ok);font-weight:bold}
+    .bad{color:var(--danger);font-weight:bold}
+    .spot{
+      background:var(--panel2);
+      border-radius:12px;
+      padding:10px;
+      margin-bottom:10px;
+    }
+    .empty{
+      color:var(--muted);
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1>🎣 Fishing App</h1>
+        <div class="subtitle">Skoon nuwe basis</div>
+      </div>
+      <div class="badge">Clean 1</div>
+    </div>
 
-<div class="app">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="home">Home</button>
+      <button class="tab-btn" data-tab="fish">Fish</button>
+      <button class="tab-btn" data-tab="legal">Legal</button>
+      <button class="tab-btn" data-tab="map">Map</button>
+    </div>
 
-<header>
-<h2>🎣 Fishing App</h2>
-<div class="badge">V1.4</div>
-</header>
+    <section id="home" class="tab active">
+      <div class="grid two">
+        <div class="card">
+          <h3>Nou is dit skoon</h3>
+          <div class="small">Geen ou chaos code nie. Een file. Netjies. Ons kan nou reg bou.</div>
+        </div>
+        <div class="card">
+          <h3>In hierdie weergawe</h3>
+          <div class="small">Local fish names, search, detail view, werkende legal checker, GPS spot save.</div>
+        </div>
+      </div>
+    </section>
 
-<nav>
-<button class="tabBtn active" onclick="tab('fish',this)">Fish</button>
-<button class="tabBtn" onclick="tab('legal',this)">Legal</button>
-</nav>
+    <section id="fish" class="tab">
+      <div class="card">
+        <h3>Fish Search</h3>
+        <input id="fishSearch" placeholder="Soek vis naam..." />
+      </div>
 
-<!-- FISH -->
-<div id="fish" class="tab active">
+      <div class="card" id="fishListCard">
+        <h3>Fish List</h3>
+        <div id="fishGrid" class="fish-grid"></div>
+      </div>
 
-<div class="card">
-<input id="search" placeholder="Search fish..." oninput="searchFish()">
-</div>
+      <div class="card" id="fishDetailCard" style="display:none;"></div>
+    </section>
 
-<div class="card">
-<div id="fishGrid" class="fish-grid"></div>
-</div>
+    <section id="legal" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Legal Checker</h3>
+          <label>Kies vis</label>
+          <select id="legalFish"></select>
 
-<div class="card" id="fishDetail" style="display:none;"></div>
+          <label>Lengte in cm</label>
+          <input id="legalLength" type="number" placeholder="bv 52" />
 
-</div>
+          <button class="action" id="checkLegalBtn">Check</button>
+        </div>
 
-<!-- LEGAL -->
-<div id="legal" class="tab">
+        <div class="card">
+          <h3>Result</h3>
+          <div id="legalResult" class="empty">Nog niks gecheck nie.</div>
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-<select id="legalFish"></select>
-<input type="number" id="legalSize" placeholder="Lengte (cm)">
-<button class="action" onclick="checkLegal()">Check</button>
-<div id="result"></div>
-</div>
+    <section id="map" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>GPS</h3>
+          <button class="action" id="useGpsBtn">Use My GPS</button>
+          <button class="action" id="saveGpsSpotBtn" style="margin-top:10px;">Save Current GPS Spot</button>
+          <div id="gpsStatus" class="small" style="margin-top:12px;">Nog geen GPS nie.</div>
+        </div>
 
-</div>
+        <div class="card">
+          <h3>Add Spot From GPS</h3>
+          <input id="spotName" placeholder="Spot naam" />
+          <input id="spotLat" placeholder="Latitude" readonly />
+          <input id="spotLon" placeholder="Longitude" readonly />
+          <textarea id="spotNote" placeholder="Nota"></textarea>
+          <button class="action" id="saveSpotBtn">Save Spot</button>
+        </div>
+      </div>
 
-</div>
+      <div class="card">
+        <h3>Saved Spots</h3>
+        <div id="spotsList" class="empty">Nog geen saved spots nie.</div>
+      </div>
+    </section>
+  </div>
 
-<script>
+  <script>
+    const fishData = [
+      { name:"kob", local:"kob", minSize:50, bagLimit:5, bait:"okka / chokka / sard", photo:"Kob foto" },
+      { name:"geelstert", local:"geelstert", minSize:0, bagLimit:10, bait:"live bait / sard / plug", photo:"Geelstert foto" },
+      { name:"geelbek", local:"geelbek", minSize:60, bagLimit:2, bait:"chokka / sard / live bait", photo:"Geelbek foto" },
+      { name:"hottentot", local:"hottentot", minSize:22, bagLimit:10, bait:"red bait / prawn / mussel", photo:"Hottentot foto" },
+      { name:"red roman", local:"roman", minSize:30, bagLimit:5, bait:"okka / sard / chokka", photo:"Red Roman foto" },
+      { name:"dageraad", local:"dageraad", minSize:40, bagLimit:1, bait:"okka / red bait", photo:"Dageraad foto" },
+      { name:"santer", local:"santer", minSize:30, bagLimit:5, bait:"okka / sard strips", photo:"Santer foto" },
+      { name:"elf", local:"elf / shad", minSize:30, bagLimit:4, bait:"sard / spoon / plug", photo:"Elf foto" },
+      { name:"bonito", local:"bonito", minSize:0, bagLimit:10, bait:"small lure / feather / spoon", photo:"Bonito foto" },
+      { name:"poensie", local:"poensie", minSize:30, bagLimit:5, bait:"okka / sard", photo:"Poensie foto" },
+      { name:"carpenter", local:"silverfish / carpenter", minSize:30, bagLimit:5, bait:"okka strips / sard", photo:"Carpenter foto" },
+      { name:"red stumpnose", local:"miss lucy / red stumpnose", minSize:25, bagLimit:5, bait:"okka / sard", photo:"Miss Lucy foto" },
+      { name:"yellowbelly rockcod", local:"yellowbelly rockcod", minSize:30, bagLimit:5, bait:"okka / sard", photo:"Yellowbelly Rockcod foto" }
+    ];
 
-// TAB
-function tab(id,btn){
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-btn.classList.add("active");
-}
+    let currentLat = "";
+    let currentLon = "";
 
-// FULL FISH LIST
-const fish = [
-{name:"kob", size:50, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Argyrosomus_japonicus.jpg"},
-{name:"geelstert", size:0, bag:10, img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Seriola_lalandi.jpg"},
-{name:"geelbek", size:60, bag:2, img:"https://upload.wikimedia.org/wikipedia/commons/8/89/Atractoscion_aequidens.jpg"},
-{name:"hottentot", size:22, bag:10, img:"https://upload.wikimedia.org/wikipedia/commons/2/27/Pachymetopon_aeneum.jpg"},
-{name:"red roman", size:30, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/3/3c/Chrysoblephus_latifrons.jpg"},
-{name:"dageraad", size:40, bag:1, img:"https://upload.wikimedia.org/wikipedia/commons/f/f5/Chrysoblephus_cristiceps.jpg"},
-{name:"santer", size:30, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/3/3d/Cheimerius_nufar.jpg"},
-{name:"elf", size:30, bag:4, img:"https://upload.wikimedia.org/wikipedia/commons/3/32/Pomatomus_saltatrix.jpg"},
-{name:"bonito", size:0, bag:10, img:"https://upload.wikimedia.org/wikipedia/commons/7/7c/Sarda_sarda.jpg"},
-{name:"poensie", size:30, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/6/65/Petrus_rupestris.jpg"},
-{name:"carpenter", size:30, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Argyrozona_argyrozona.jpg"},
-{name:"miss lucy", size:25, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/1/1d/Pagrus_auratus.jpg"},
-{name:"yellowbelly rockcod", size:30, bag:5, img:"https://upload.wikimedia.org/wikipedia/commons/9/9c/Epinephelus_marginatus.jpg"}
-];
+    function showTab(tabId){
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add("active");
+    }
 
-// LOAD FISH
-function loadFish(list=fish){
-let grid=document.getElementById("fishGrid");
-grid.innerHTML="";
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => showTab(btn.dataset.tab));
+    });
 
-list.forEach(f=>{
-let d=document.createElement("div");
-d.className="fish-card";
+    function renderFish(list = fishData){
+      const grid = document.getElementById("fishGrid");
+      grid.innerHTML = "";
 
-d.innerHTML=`
-<img src="${f.img}">
-<b>${f.name}</b><br>
-${f.size}cm | ${f.bag}
-`;
+      if(!list.length){
+        grid.innerHTML = `<div class="empty">Geen vis gekry nie.</div>`;
+        return;
+      }
 
-d.onclick=()=>showFish(f);
-grid.appendChild(d);
-});
-}
+      list.forEach(fish => {
+        const card = document.createElement("div");
+        card.className = "fish-card";
+        card.innerHTML = `
+          <div class="img">${fish.photo}</div>
+          <div class="body">
+            <h4>${fish.local}</h4>
+            <div class="small">${fish.minSize} cm | ${fish.bagLimit}</div>
+          </div>
+        `;
+        card.onclick = () => showFishDetail(fish);
+        grid.appendChild(card);
+      });
+    }
 
-// SEARCH
-function searchFish(){
-let q=document.getElementById("search").value.toLowerCase();
-let filtered=fish.filter(f=>f.name.includes(q));
-loadFish(filtered);
-}
+    function showFishDetail(fish){
+      const card = document.getElementById("fishDetailCard");
+      card.style.display = "block";
+      card.innerHTML = `
+        <h3>${fish.local}</h3>
+        <div class="detail-photo">${fish.photo}</div>
 
-// DETAIL
-function showFish(f){
-let box=document.getElementById("fishDetail");
-box.style.display="block";
+        <div class="pill-row">
+          <div class="pill"><strong>English name</strong><br>${fish.name}</div>
+          <div class="pill"><strong>Minimum size</strong><br>${fish.minSize} cm</div>
+          <div class="pill"><strong>Bag limit</strong><br>${fish.bagLimit}</div>
+          <div class="pill"><strong>Bait</strong><br>${fish.bait}</div>
+        </div>
 
-box.innerHTML=`
-<h3>${f.name}</h3>
-<img src="${f.img}" style="width:100%">
-<p>Min size: ${f.size} cm</p>
-<p>Bag limit: ${f.bag}</p>
-<button onclick="back()">Back</button>
-`;
-}
+        <button class="action" onclick="hideFishDetail()">← Back</button>
+      `;
+    }
 
-function back(){
-document.getElementById("fishDetail").style.display="none";
-}
+    function hideFishDetail(){
+      document.getElementById("fishDetailCard").style.display = "none";
+    }
 
-// LEGAL DROPDOWN
-function loadLegal(){
-let sel=document.getElementById("legalFish");
-sel.innerHTML=fish.map(f=>`<option>${f.name}</option>`).join("");
-}
+    document.getElementById("fishSearch").addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = fishData.filter(f =>
+        f.name.toLowerCase().includes(q) ||
+        f.local.toLowerCase().includes(q)
+      );
+      renderFish(filtered);
+    });
 
-// LEGAL CHECK
-function checkLegal(){
-let name=document.getElementById("legalFish").value;
-let size=document.getElementById("legalSize").value;
+    function loadLegalFish(){
+      const select = document.getElementById("legalFish");
+      select.innerHTML = fishData.map(f => `
+        <option value="${f.name}">${f.local}</option>
+      `).join("");
+    }
 
-let f=fish.find(x=>x.name===name);
+    document.getElementById("checkLegalBtn").addEventListener("click", () => {
+      const name = document.getElementById("legalFish").value;
+      const length = Number(document.getElementById("legalLength").value);
+      const fish = fishData.find(f => f.name === name);
 
-if(size>=f.size){
-document.getElementById("result").innerText="✔ Wettig";
-}else{
-document.getElementById("result").innerText="❌ Te klein";
-}
-}
+      if(!fish || !length){
+        document.getElementById("legalResult").innerHTML = `<span class="bad">Tik eers 'n geldige lengte in.</span>`;
+        return;
+      }
 
-// INIT
-loadFish();
-loadLegal();
+      if(fish.minSize === 0 || length >= fish.minSize){
+        document.getElementById("legalResult").innerHTML = `
+          <div class="ok">✔ Wettig volgens app</div>
+          <div style="margin-top:10px;">
+            <strong>${fish.local}</strong><br>
+            Minimum size: ${fish.minSize} cm<br>
+            Bag limit: ${fish.bagLimit}
+          </div>
+        `;
+      } else {
+        document.getElementById("legalResult").innerHTML = `
+          <div class="bad">❌ Te klein</div>
+          <div style="margin-top:10px;">
+            <strong>${fish.local}</strong><br>
+            Minimum size: ${fish.minSize} cm<br>
+            Jou vis: ${length} cm
+          </div>
+        `;
+      }
+    });
 
-</script>
+    function getSavedSpots(){
+      return JSON.parse(localStorage.getItem("clean_spots") || "[]");
+    }
 
+    function saveSavedSpots(spots){
+      localStorage.setItem("clean_spots", JSON.stringify(spots));
+    }
+
+    function renderSpots(){
+      const spots = getSavedSpots();
+      const box = document.getElementById("spotsList");
+
+      if(!spots.length){
+        box.innerHTML = "Nog geen saved spots nie.";
+        box.className = "empty";
+        return;
+      }
+
+      box.className = "";
+      box.innerHTML = spots.map(spot => `
+        <div class="spot">
+          <strong>${spot.name}</strong><br>
+          <span class="small">${spot.lat}, ${spot.lon}</span><br><br>
+          ${spot.note || ""}
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("useGpsBtn").addEventListener("click", () => {
+      if(!navigator.geolocation){
+        document.getElementById("gpsStatus").textContent = "GPS nie beskikbaar nie.";
+        return;
+      }
+
+      document.getElementById("gpsStatus").textContent = "Besig om GPS te kry...";
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          currentLat = pos.coords.latitude.toFixed(6);
+          currentLon = pos.coords.longitude.toFixed(6);
+          document.getElementById("gpsStatus").textContent = `GPS: ${currentLat}, ${currentLon}`;
+          document.getElementById("spotLat").value = currentLat;
+          document.getElementById("spotLon").value = currentLon;
+        },
+        () => {
+          document.getElementById("gpsStatus").textContent = "Kon nie GPS kry nie.";
+        },
+        { enableHighAccuracy:true, timeout:20000, maximumAge:0 }
+      );
+    });
+
+    document.getElementById("saveGpsSpotBtn").addEventListener("click", () => {
+      if(!currentLat || !currentLon){
+        alert("Druk eers Use My GPS.");
+        return;
+      }
+
+      const name = prompt("Naam vir GPS spot?");
+      if(!name) return;
+      const note = prompt("Nota?") || "";
+
+      const spots = getSavedSpots();
+      spots.push({ name, lat:currentLat, lon:currentLon, note });
+      saveSavedSpots(spots);
+      renderSpots();
+      alert("GPS spot saved.");
+    });
+
+    document.getElementById("saveSpotBtn").addEventListener("click", () => {
+      const name = document.getElementById("spotName").value.trim();
+      const lat = document.getElementById("spotLat").value.trim();
+      const lon = document.getElementById("spotLon").value.trim();
+      const note = document.getElementById("spotNote").value.trim();
+
+      if(!name){
+        alert("Tik eers spot naam.");
+        return;
+      }
+      if(!lat || !lon){
+        alert("Druk eers Use My GPS.");
+        return;
+      }
+
+      const spots = getSavedSpots();
+      spots.push({ name, lat, lon, note });
+      saveSavedSpots(spots);
+      renderSpots();
+
+      document.getElementById("spotName").value = "";
+      document.getElementById("spotNote").value = "";
+
+      alert("Spot saved.");
+    });
+
+    renderFish();
+    loadLegalFish();
+    renderSpots();
+  </script>
 </body>
-  </html>
+</html>
