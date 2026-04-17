@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V0.3</title>
+<title>Fishing App V0.3.1</title>
 
 <style>
 body {
@@ -14,9 +14,7 @@ body {
   padding: 16px;
 }
 
-h1 {
-  margin: 0 0 16px 0;
-}
+h1 { margin: 0 0 16px 0; }
 
 .tabs {
   display: flex;
@@ -38,13 +36,8 @@ h1 {
   color: black;
 }
 
-.tab {
-  display: none;
-}
-
-.tab.active {
-  display: block;
-}
+.tab { display: none; }
+.tab.active { display: block; }
 
 .card {
   background: #0d1f2d;
@@ -102,14 +95,12 @@ input, select {
   <button class="tabBtn" onclick="openTab('map', this)">Map</button>
 </div>
 
-<!-- HOME -->
 <div id="home" class="tab active">
   <div class="card">
-    Werkende basis + legal checker.
+    Kob is nou reg: 60cm ✔
   </div>
 </div>
 
-<!-- FISH -->
 <div id="fish" class="tab">
   <div class="card">
     <h3>Fish</h3>
@@ -119,7 +110,6 @@ input, select {
   <div id="fishDetailCard" class="card" style="display:none;"></div>
 </div>
 
-<!-- LEGAL -->
 <div id="legal" class="tab">
   <div class="card">
     <h3>Legal Checker</h3>
@@ -134,7 +124,6 @@ input, select {
   </div>
 </div>
 
-<!-- MAP -->
 <div id="map" class="tab">
   <div class="card">
     Map kom volgende.
@@ -144,7 +133,7 @@ input, select {
 <script>
 
 const fishData = [
-  { name: "kob", size: 50, bag: 5, bait: "okka / chokka / sard" },
+  { name: "kob", size: 60, bag: 5, bait: "okka / chokka / sard" },
   { name: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
   { name: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait" },
   { name: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" }
