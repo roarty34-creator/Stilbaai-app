@@ -1,318 +1,83 @@
 <!DOCTYPE html>
 <html lang="af">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V1.6</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #06111b;
+      color: white;
+      padding: 16px;
+    }
 
-<style>
-:root{
---bg:#06111b;
---panel:#0d1f2d;
---panel2:#123247;
---accent:#19c2ff;
---text:#f5fbff;
---muted:#9eb7c8;
-}
+    h1 {
+      margin-top: 0;
+    }
 
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(#06111b,#02070d);
-color:var(--text);
-}
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
 
-.app{padding:12px;max-width:1000px;margin:auto;}
+    .tabs button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: #123247;
+      color: white;
+      font-weight: bold;
+    }
 
-header{
-display:flex;justify-content:space-between;align-items:center;
-margin-bottom:10px;
-}
+    .tabs button.active {
+      background: #19c2ff;
+      color: black;
+    }
 
-.badge{
-background:var(--accent);
-color:black;
-padding:6px 10px;
-border-radius:20px;
-font-weight:bold;
-}
+    .tab {
+      display: none;
+      background: #0d1f2d;
+      padding: 16px;
+      border-radius: 12px;
+    }
 
-.tabs{
-display:flex;gap:6px;margin-bottom:10px;
-}
-
-.tabs button{
-flex:1;
-padding:10px;
-border:none;
-border-radius:10px;
-background:var(--panel2);
-color:white;
-font-weight:bold;
-}
-
-.tabs button.active{
-background:var(--accent);
-color:black;
-}
-
-.tab{display:none;}
-.tab.active{display:block;}
-
-.card{
-background:var(--panel);
-padding:12px;
-margin-bottom:10px;
-border-radius:12px;
-}
-
-input{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-background:#102636;
-color:white;
-margin-bottom:10px;
-}
-
-.fish-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:10px;
-}
-
-.fish-card{
-background:var(--panel2);
-border-radius:12px;
-overflow:hidden;
-cursor:pointer;
-}
-
-.fish-card img{
-width:100%;
-height:120px;
-object-fit:cover;
-}
-
-.fish-card .body{
-padding:8px;
-}
-
-.small{font-size:13px;color:var(--muted);}
-</style>
+    .tab.active {
+      display: block;
+    }
+  </style>
 </head>
-
 <body>
+  <h1>Fishing App Test</h1>
 
-<div class="app">
+  <div class="tabs">
+    <button class="tabBtn active" onclick="openTab('home', this)">Home</button>
+    <button class="tabBtn" onclick="openTab('fish', this)">Fish</button>
+    <button class="tabBtn" onclick="openTab('map', this)">Map</button>
+  </div>
 
-<header>
-<h2>🎣 Fishing App</h2>
-<div class="badge">V1.6</div>
-</header>
+  <div id="home" class="tab active">
+    Home werk.
+  </div>
 
-<div class="tabs">
-<button class="tabBtn active" onclick="tab('fish',this)">Fish</button>
-<button class="tabBtn" onclick="tab('legal',this)">Legal</button>
-</div>
+  <div id="fish" class="tab">
+    Fish werk.
+  </div>
 
-<!-- FISH -->
-<div id="fish" class="tab active">
+  <div id="map" class="tab">
+    Map werk.
+  </div>
 
-<div class="card">
-<input id="search" placeholder="Soek vis..." oninput="searchFish()">
-</div>
+  <script>
+    function openTab(id, btn) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tabBtn').forEach(button => button.classList.remove('active'));
 
-<div class="card">
-<div id="fishGrid" class="fish-grid"></div>
-</div>
-
-<div class="card" id="detail" style="display:none;"></div>
-
-</div>
-
-<!-- LEGAL -->
-<div id="legal" class="tab">
-<div class="card">
-<select id="legalFish"></select>
-<input type="number" id="size" placeholder="Lengte cm">
-<button onclick="check()">Check</button>
-<div id="result"></div>
-</div>
-</div>
-
-</div>
-
-<script>
-
-function tab(id,btn){
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-btn.classList.add("active");
-}
-
-const fish = [
-{
-name:"kob",
-local:"kob",
-size:50,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Argyrosomus_japonicus.jpg"
-},
-{
-name:"geelstert",
-local:"geelstert",
-size:0,
-bag:10,
-img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Seriola_lalandi.jpg"
-},
-{
-name:"geelbek",
-local:"geelbek",
-size:60,
-bag:2,
-img:"https://upload.wikimedia.org/wikipedia/commons/8/89/Atractoscion_aequidens.jpg"
-},
-{
-name:"hottentot",
-local:"hottentot",
-size:22,
-bag:10,
-img:"https://upload.wikimedia.org/wikipedia/commons/2/27/Pachymetopon_aeneum.jpg"
-},
-{
-name:"red roman",
-local:"roman",
-size:30,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/3/3c/Chrysoblephus_latifrons.jpg"
-},
-{
-name:"dageraad",
-local:"dageraad",
-size:40,
-bag:1,
-img:"https://upload.wikimedia.org/wikipedia/commons/f/f5/Chrysoblephus_cristiceps.jpg"
-},
-{
-name:"santer",
-local:"santer",
-size:30,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/3/3d/Cheimerius_nufar.jpg"
-},
-{
-name:"elf",
-local:"elf",
-size:30,
-bag:4,
-img:"https://upload.wikimedia.org/wikipedia/commons/3/32/Pomatomus_saltatrix.jpg"
-},
-{
-name:"bonito",
-local:"bonito",
-size:0,
-bag:10,
-img:"https://upload.wikimedia.org/wikipedia/commons/7/7c/Sarda_sarda.jpg"
-},
-{
-name:"poensie",
-local:"poensie",
-size:30,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/6/65/Petrus_rupestris.jpg"
-},
-{
-name:"carpenter",
-local:"silverfish",
-size:30,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Argyrozona_argyrozona.jpg"
-},
-{
-name:"miss lucy",
-local:"miss lucy",
-size:25,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/1/1d/Pagrus_auratus.jpg"
-},
-{
-name:"yellowbelly",
-local:"yellowbelly rockcod",
-size:30,
-bag:5,
-img:"https://upload.wikimedia.org/wikipedia/commons/9/9c/Epinephelus_marginatus.jpg"
-}
-];
-
-function loadFish(list=fish){
-let grid=document.getElementById("fishGrid");
-grid.innerHTML="";
-
-list.forEach(f=>{
-let d=document.createElement("div");
-d.className="fish-card";
-
-d.innerHTML=`
-<img src="${f.img}">
-<div class="body">
-<b>${f.local}</b><br>
-<span class="small">${f.size}cm | ${f.bag}</span>
-</div>
-`;
-
-d.onclick=()=>show(f);
-grid.appendChild(d);
-});
-}
-
-function show(f){
-let box=document.getElementById("detail");
-box.style.display="block";
-
-box.innerHTML=`
-<h3>${f.local}</h3>
-<img src="${f.img}" style="width:100%">
-<p>Min size: ${f.size} cm</p>
-<p>Bag: ${f.bag}</p>
-<button onclick="back()">Back</button>
-`;
-}
-
-function back(){
-document.getElementById("detail").style.display="none";
-}
-
-function searchFish(){
-let q=document.getElementById("search").value.toLowerCase();
-let filtered=fish.filter(f=>f.local.includes(q));
-loadFish(filtered);
-}
-
-function loadLegal(){
-let sel=document.getElementById("legalFish");
-sel.innerHTML=fish.map(f=>`<option>${f.local}</option>`).join("");
-}
-
-function check(){
-let name=document.getElementById("legalFish").value;
-let size=document.getElementById("size").value;
-
-let f=fish.find(x=>x.local===name);
-
-if(size>=f.size){
-document.getElementById("result").innerText="✔ Wettig";
-}else{
-document.getElementById("result").innerText="❌ Te klein";
-}
-}
-
-loadFish();
-loadLegal();
-
-</script>
-
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>
