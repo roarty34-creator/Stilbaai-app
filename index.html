@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test App</title>
+  <title>Fishing App</title>
   <style>
     body {
       margin: 0;
@@ -14,7 +14,7 @@
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0 0 16px 0;
     }
 
     .tabs {
@@ -39,18 +39,48 @@
 
     .tab {
       display: none;
-      background: #0d1f2d;
-      padding: 16px;
-      border-radius: 12px;
     }
 
     .tab.active {
       display: block;
     }
+
+    .card {
+      background: #0d1f2d;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .fish-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .fish-item {
+      background: #123247;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .small {
+      color: #9eb7c8;
+      font-size: 13px;
+    }
+
+    button.action {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: #19c2ff;
+      color: black;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Fishing App Test</h1>
+  <h1>🎣 Fishing App</h1>
 
   <div class="tabs">
     <button class="tabBtn active" onclick="openTab('home', this)">Home</button>
@@ -59,25 +89,74 @@
   </div>
 
   <div id="home" class="tab active">
-    Home werk.
+    <div class="card">
+      Welkom. Nou bou ons van die werkende basis af.
+    </div>
   </div>
 
   <div id="fish" class="tab">
-    Fish werk.
+    <div class="card" id="fishListCard">
+      <h3>Fish</h3>
+      <div id="fishList" class="fish-list"></div>
+    </div>
+
+    <div id="fishDetailCard" class="card" style="display:none;"></div>
   </div>
 
   <div id="map" class="tab">
-    Map werk.
+    <div class="card">
+      Map kom volgende.
+    </div>
   </div>
 
   <script>
+    const fishData = [
+      { name: "kob", size: 50, bag: 5, bait: "okka / chokka / sard" },
+      { name: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
+      { name: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait" },
+      { name: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" }
+    ];
+
     function openTab(id, btn) {
       document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tabBtn').forEach(button => button.classList.remove('active'));
-
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
     }
+
+    function renderFish() {
+      const list = document.getElementById('fishList');
+      list.innerHTML = '';
+
+      fishData.forEach(fish => {
+        const item = document.createElement('div');
+        item.className = 'fish-item';
+        item.innerHTML = `
+          <strong>${fish.name}</strong><br>
+          <span class="small">${fish.size} cm | bag ${fish.bag}</span>
+        `;
+        item.onclick = () => showFish(fish);
+        list.appendChild(item);
+      });
+    }
+
+    function showFish(fish) {
+      const detail = document.getElementById('fishDetailCard');
+      detail.style.display = 'block';
+      detail.innerHTML = `
+        <h3>${fish.name}</h3>
+        <p><strong>Minimum size:</strong> ${fish.size} cm</p>
+        <p><strong>Bag limit:</strong> ${fish.bag}</p>
+        <p><strong>Bait:</strong> ${fish.bait}</p>
+        <button class="action" onclick="hideFish()">← Back</button>
+      `;
+    }
+
+    function hideFish() {
+      document.getElementById('fishDetailCard').style.display = 'none';
+    }
+
+    renderFish();
   </script>
 </body>
 </html>
