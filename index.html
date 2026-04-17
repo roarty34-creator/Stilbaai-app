@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V0.3.1</title>
+<title>Fishing App V0.4</title>
 
 <style>
 body {
@@ -14,7 +14,9 @@ body {
   padding: 16px;
 }
 
-h1 { margin: 0 0 16px 0; }
+h1 {
+  margin: 0 0 16px 0;
+}
 
 .tabs {
   display: flex;
@@ -36,8 +38,13 @@ h1 { margin: 0 0 16px 0; }
   color: black;
 }
 
-.tab { display: none; }
-.tab.active { display: block; }
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
 
 .card {
   background: #0d1f2d;
@@ -97,11 +104,16 @@ input, select {
 
 <div id="home" class="tab active">
   <div class="card">
-    Kob is nou reg: 60cm ✔
+    Fish search is nou in.
   </div>
 </div>
 
 <div id="fish" class="tab">
+  <div class="card">
+    <h3>Fish Search</h3>
+    <input id="fishSearch" type="text" placeholder="Soek vis naam..." oninput="filterFish()">
+  </div>
+
   <div class="card">
     <h3>Fish</h3>
     <div id="fishList" class="fish-list"></div>
@@ -131,7 +143,6 @@ input, select {
 </div>
 
 <script>
-
 const fishData = [
   { name: "kob", size: 60, bag: 5, bait: "okka / chokka / sard" },
   { name: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
@@ -146,73 +157,20 @@ function openTab(id, btn) {
   btn.classList.add('active');
 }
 
-function renderFish() {
-  const list = document.getElementById('fishList');
-  list.innerHTML = '';
+function renderFish(list = fishData) {
+  const fishList = document.getElementById('fishList');
+  fishList.innerHTML = '';
 
-  fishData.forEach(fish => {
+  if (!list.length) {
+    fishList.innerHTML = `<div class="small">Geen vis gekry nie.</div>`;
+    return;
+  }
+
+  list.forEach(fish => {
     const item = document.createElement('div');
     item.className = 'fish-item';
     item.innerHTML = `
       <strong>${fish.name}</strong><br>
       <span class="small">${fish.size} cm | bag ${fish.bag}</span>
     `;
-    item.onclick = () => showFish(fish);
-    list.appendChild(item);
-  });
-}
-
-function showFish(fish) {
-  const detail = document.getElementById('fishDetailCard');
-  detail.style.display = 'block';
-  detail.innerHTML = `
-    <h3>${fish.name}</h3>
-    <p><strong>Minimum size:</strong> ${fish.size} cm</p>
-    <p><strong>Bag limit:</strong> ${fish.bag}</p>
-    <p><strong>Bait:</strong> ${fish.bait}</p>
-    <button class="action" onclick="hideFish()">← Back</button>
-  `;
-}
-
-function hideFish() {
-  document.getElementById('fishDetailCard').style.display = 'none';
-}
-
-function loadLegalFish() {
-  const select = document.getElementById('legalFish');
-  select.innerHTML = '';
-
-  fishData.forEach(fish => {
-    const option = document.createElement('option');
-    option.value = fish.name;
-    option.textContent = fish.name;
-    select.appendChild(option);
-  });
-}
-
-function checkLegal() {
-  const name = document.getElementById('legalFish').value;
-  const length = Number(document.getElementById('legalSize').value);
-  const result = document.getElementById('legalResult');
-
-  const fish = fishData.find(f => f.name === name);
-
-  if (!fish || !length) {
-    result.innerHTML = `<span style="color:#ff6b6b;">Tik eers lengte in.</span>`;
-    return;
-  }
-
-  if (fish.size === 0 || length >= fish.size) {
-    result.innerHTML = `<span style="color:#48d17a;">✔ Wettig</span>`;
-  } else {
-    result.innerHTML = `<span style="color:#ff6b6b;">❌ Te klein</span>`;
-  }
-}
-
-renderFish();
-loadLegalFish();
-
-</script>
-
-</body>
-</html>
+    item.onclick = () => showFish(fish
