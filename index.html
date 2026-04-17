@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V0.4</title>
+<title>Fishing App V0.4.1</title>
 
 <style>
 body {
@@ -22,6 +22,7 @@ h1 {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .tabs button {
@@ -31,6 +32,7 @@ h1 {
   background: #123247;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .tabs button.active {
@@ -77,6 +79,7 @@ button.action {
   background: #19c2ff;
   color: black;
   font-weight: bold;
+  cursor: pointer;
 }
 
 input, select {
@@ -96,22 +99,22 @@ input, select {
 <h1>🎣 Fishing App</h1>
 
 <div class="tabs">
-  <button class="tabBtn active" onclick="openTab('home', this)">Home</button>
-  <button class="tabBtn" onclick="openTab('fish', this)">Fish</button>
-  <button class="tabBtn" onclick="openTab('legal', this)">Legal</button>
-  <button class="tabBtn" onclick="openTab('map', this)">Map</button>
+  <button class="tabBtn active" data-tab="home">Home</button>
+  <button class="tabBtn" data-tab="fish">Fish</button>
+  <button class="tabBtn" data-tab="legal">Legal</button>
+  <button class="tabBtn" data-tab="map">Map</button>
 </div>
 
 <div id="home" class="tab active">
   <div class="card">
-    Fish search is nou in.
+    Tabs is nou reggemaak.
   </div>
 </div>
 
 <div id="fish" class="tab">
   <div class="card">
     <h3>Fish Search</h3>
-    <input id="fishSearch" type="text" placeholder="Soek vis naam..." oninput="filterFish()">
+    <input id="fishSearch" type="text" placeholder="Soek vis naam...">
   </div>
 
   <div class="card">
@@ -130,7 +133,7 @@ input, select {
 
     <input id="legalSize" type="number" placeholder="Lengte cm">
 
-    <button class="action" onclick="checkLegal()">Check</button>
+    <button class="action" id="checkLegalBtn">Check</button>
 
     <div id="legalResult" class="small">Nog niks gecheck nie.</div>
   </div>
@@ -150,12 +153,22 @@ const fishData = [
   { name: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" }
 ];
 
-function openTab(id, btn) {
+function openTab(id) {
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tabBtn').forEach(button => button.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
+
+  const targetTab = document.getElementById(id);
+  const targetBtn = document.querySelector(`.tabBtn[data-tab="${id}"]`);
+
+  if (targetTab) targetTab.classList.add('active');
+  if (targetBtn) targetBtn.classList.add('active');
 }
+
+document.querySelectorAll('.tabBtn').forEach(button => {
+  button.addEventListener('click', () => {
+    openTab(button.dataset.tab);
+  });
+});
 
 function renderFish(list = fishData) {
   const fishList = document.getElementById('fishList');
@@ -173,4 +186,85 @@ function renderFish(list = fishData) {
       <strong>${fish.name}</strong><br>
       <span class="small">${fish.size} cm | bag ${fish.bag}</span>
     `;
-    item.onclick = () => showFish(fish
+    item.addEventListener('click', () => showFish(fish));
+    fishList.appendChild(item);
+  });
+}
+
+function filterFish() {
+  const q = document.getElementById('fishSearch').value.toLowerCase().trim();
+  const filtered = fishData.filter(fish =>
+    fish.name.toLowerCase().includes(q)
+  );
+  renderFish(filtered);
+}
+
+document.getElementById('fishSearch').addEventListener('input', filterFish);
+
+function showFish(fish) {
+  const detail = document.getElementById('fishDetailCard');
+  detail.style.display = 'block';
+  detail.innerHTML = `
+    <h3>${fish.name}</h3>
+    <p><strong>Minimum size:</strong> ${fish.size} cm</p>
+    <p><strong>Bag limit:</strong> ${fish.bag}</p>
+    <p><strong>Bait:</strong> ${fish.bait}</p>
+    <button class="action" id="backFishBtn">← Back</button>
+  `;
+
+  document.getElementById('backFishBtn').addEventListener('click', hideFish);
+}
+
+function hideFish() {
+  document.getElementById('fishDetailCard').style.display = 'none';
+}
+
+function loadLegalFish() {
+  const select = document.getElementById('legalFish');
+  select.innerHTML = '';
+
+  fishData.forEach(fish => {
+    const option = document.createElement('option');
+    option.value = fish.name;
+    option.textContent = fish.name;
+    select.appendChild(option);
+  });
+}
+
+function checkLegal() {
+  const name = document.getElementById('legalFish').value;
+  const length = Number(document.getElementById('legalSize').value);
+  const result = document.getElementById('legalResult');
+
+  const fish = fishData.find(f => f.name === name);
+
+  if (!fish || !length) {
+    result.innerHTML = `<span style="color:#ff6b6b;">Tik eers lengte in.</span>`;
+    return;
+  }
+
+  if (fish.size === 0 || length >= fish.size) {
+    result.innerHTML = `
+      <span style="color:#48d17a;">✔ Wettig</span><br>
+      ${fish.name}<br>
+      Minimum size: ${fish.size} cm<br>
+      Bag limit: ${fish.bag}
+    `;
+  } else {
+    result.innerHTML = `
+      <span style="color:#ff6b6b;">❌ Te klein</span><br>
+      ${fish.name}<br>
+      Minimum size: ${fish.size} cm<br>
+      Jou vis: ${length} cm
+    `;
+  }
+}
+
+document.getElementById('checkLegalBtn').addEventListener('click', checkLegal);
+
+renderFish();
+loadLegalFish();
+</script>
+
+</body>
+</html>
