@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V0.4.1</title>
+<title>Fishing App V0.4.2</title>
 
 <style>
 body {
@@ -14,9 +14,7 @@ body {
   padding: 16px;
 }
 
-h1 {
-  margin: 0 0 16px 0;
-}
+h1 { margin: 0 0 16px 0; }
 
 .tabs {
   display: flex;
@@ -40,13 +38,8 @@ h1 {
   color: black;
 }
 
-.tab {
-  display: none;
-}
-
-.tab.active {
-  display: block;
-}
+.tab { display: none; }
+.tab.active { display: block; }
 
 .card {
   background: #0d1f2d;
@@ -105,165 +98,123 @@ input, select {
   <button class="tabBtn" data-tab="map">Map</button>
 </div>
 
+<!-- HOME -->
 <div id="home" class="tab active">
-  <div class="card">
-    Tabs is nou reggemaak.
-  </div>
+  <div class="card">Home werk.</div>
 </div>
 
+<!-- FISH -->
 <div id="fish" class="tab">
   <div class="card">
     <h3>Fish Search</h3>
-    <input id="fishSearch" type="text" placeholder="Soek vis naam...">
+    <input id="fishSearch" placeholder="Soek vis...">
   </div>
 
   <div class="card">
-    <h3>Fish</h3>
     <div id="fishList" class="fish-list"></div>
   </div>
 
   <div id="fishDetailCard" class="card" style="display:none;"></div>
 </div>
 
+<!-- LEGAL -->
 <div id="legal" class="tab">
   <div class="card">
-    <h3>Legal Checker</h3>
-
+    <h3>Legal</h3>
     <select id="legalFish"></select>
-
     <input id="legalSize" type="number" placeholder="Lengte cm">
-
-    <button class="action" id="checkLegalBtn">Check</button>
-
-    <div id="legalResult" class="small">Nog niks gecheck nie.</div>
+    <button class="action" id="checkBtn">Check</button>
+    <div id="legalResult"></div>
   </div>
 </div>
 
+<!-- MAP -->
 <div id="map" class="tab">
   <div class="card">
-    Map kom volgende.
+    <h3>Map</h3>
+    Map werk nou ✔
   </div>
 </div>
 
 <script>
+
 const fishData = [
-  { name: "kob", size: 60, bag: 5, bait: "okka / chokka / sard" },
-  { name: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
-  { name: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait" },
-  { name: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" }
+  { name: "kob", size: 60, bag: 5 },
+  { name: "geelstert", size: 0, bag: 10 },
+  { name: "geelbek", size: 60, bag: 2 },
+  { name: "hottentot", size: 22, bag: 10 }
 ];
 
-function openTab(id) {
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tabBtn').forEach(button => button.classList.remove('active'));
+function openTab(id){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
 
-  const targetTab = document.getElementById(id);
-  const targetBtn = document.querySelector(`.tabBtn[data-tab="${id}"]`);
-
-  if (targetTab) targetTab.classList.add('active');
-  if (targetBtn) targetBtn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
 }
 
-document.querySelectorAll('.tabBtn').forEach(button => {
-  button.addEventListener('click', () => {
-    openTab(button.dataset.tab);
+document.querySelectorAll('.tabBtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    openTab(btn.getAttribute('data-tab'));
   });
 });
 
-function renderFish(list = fishData) {
-  const fishList = document.getElementById('fishList');
-  fishList.innerHTML = '';
+// FISH
+function renderFish(list = fishData){
+  const box = document.getElementById('fishList');
+  box.innerHTML = '';
 
-  if (!list.length) {
-    fishList.innerHTML = `<div class="small">Geen vis gekry nie.</div>`;
-    return;
-  }
-
-  list.forEach(fish => {
-    const item = document.createElement('div');
-    item.className = 'fish-item';
-    item.innerHTML = `
-      <strong>${fish.name}</strong><br>
-      <span class="small">${fish.size} cm | bag ${fish.bag}</span>
-    `;
-    item.addEventListener('click', () => showFish(fish));
-    fishList.appendChild(item);
+  list.forEach(f=>{
+    let d = document.createElement('div');
+    d.className = 'fish-item';
+    d.innerHTML = `${f.name}<br><span class="small">${f.size} cm | ${f.bag}</span>`;
+    d.onclick = ()=>showFish(f);
+    box.appendChild(d);
   });
 }
 
-function filterFish() {
-  const q = document.getElementById('fishSearch').value.toLowerCase().trim();
-  const filtered = fishData.filter(fish =>
-    fish.name.toLowerCase().includes(q)
-  );
-  renderFish(filtered);
-}
-
-document.getElementById('fishSearch').addEventListener('input', filterFish);
-
-function showFish(fish) {
-  const detail = document.getElementById('fishDetailCard');
-  detail.style.display = 'block';
-  detail.innerHTML = `
-    <h3>${fish.name}</h3>
-    <p><strong>Minimum size:</strong> ${fish.size} cm</p>
-    <p><strong>Bag limit:</strong> ${fish.bag}</p>
-    <p><strong>Bait:</strong> ${fish.bait}</p>
-    <button class="action" id="backFishBtn">← Back</button>
+function showFish(f){
+  let d = document.getElementById('fishDetailCard');
+  d.style.display = 'block';
+  d.innerHTML = `
+    <h3>${f.name}</h3>
+    ${f.size} cm<br>
+    bag ${f.bag}<br><br>
+    <button onclick="hideFish()">Back</button>
   `;
-
-  document.getElementById('backFishBtn').addEventListener('click', hideFish);
 }
 
-function hideFish() {
-  document.getElementById('fishDetailCard').style.display = 'none';
+function hideFish(){
+  document.getElementById('fishDetailCard').style.display='none';
 }
 
-function loadLegalFish() {
-  const select = document.getElementById('legalFish');
-  select.innerHTML = '';
+document.getElementById('fishSearch').addEventListener('input', ()=>{
+  let q = document.getElementById('fishSearch').value.toLowerCase();
+  let filtered = fishData.filter(f=>f.name.includes(q));
+  renderFish(filtered);
+});
 
-  fishData.forEach(fish => {
-    const option = document.createElement('option');
-    option.value = fish.name;
-    option.textContent = fish.name;
-    select.appendChild(option);
-  });
+// LEGAL
+function loadLegal(){
+  let sel = document.getElementById('legalFish');
+  sel.innerHTML = fishData.map(f=>`<option>${f.name}</option>`).join('');
 }
 
-function checkLegal() {
-  const name = document.getElementById('legalFish').value;
-  const length = Number(document.getElementById('legalSize').value);
-  const result = document.getElementById('legalResult');
+document.getElementById('checkBtn').onclick = ()=>{
+  let name = document.getElementById('legalFish').value;
+  let size = Number(document.getElementById('legalSize').value);
+  let f = fishData.find(x=>x.name===name);
 
-  const fish = fishData.find(f => f.name === name);
-
-  if (!fish || !length) {
-    result.innerHTML = `<span style="color:#ff6b6b;">Tik eers lengte in.</span>`;
-    return;
-  }
-
-  if (fish.size === 0 || length >= fish.size) {
-    result.innerHTML = `
-      <span style="color:#48d17a;">✔ Wettig</span><br>
-      ${fish.name}<br>
-      Minimum size: ${fish.size} cm<br>
-      Bag limit: ${fish.bag}
-    `;
+  if(size >= f.size){
+    document.getElementById('legalResult').innerHTML = "✔ Wettig";
   } else {
-    result.innerHTML = `
-      <span style="color:#ff6b6b;">❌ Te klein</span><br>
-      ${fish.name}<br>
-      Minimum size: ${fish.size} cm<br>
-      Jou vis: ${length} cm
-    `;
+    document.getElementById('legalResult').innerHTML = "❌ Te klein";
   }
-}
-
-document.getElementById('checkLegalBtn').addEventListener('click', checkLegal);
+};
 
 renderFish();
-loadLegalFish();
+loadLegal();
+
 </script>
 
 </body>
