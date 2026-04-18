@@ -123,10 +123,6 @@
       cursor:pointer;
     }
 
-    .fish-item:hover{
-      opacity:.95;
-    }
-
     input, select, textarea{
       width:100%;
       padding:10px;
@@ -135,6 +131,26 @@
       background:#102636;
       color:white;
       margin-bottom:12px;
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:var(--muted);
+      opacity:1;
+    }
+
+    input[type="date"],
+    input[type="time"]{
+      color:var(--text);
+      min-height:44px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:bold;
     }
 
     textarea{
@@ -232,8 +248,12 @@
       <div class="grid two">
         <div class="card">
           <h3>Legal Checker</h3>
+          <label for="legalFish">Fish</label>
           <select id="legalFish"></select>
+
+          <label for="legalSize">Lengte cm</label>
           <input id="legalSize" type="number" placeholder="Lengte cm" />
+
           <button class="action" id="checkBtn">Check</button>
         </div>
         <div class="card">
@@ -254,10 +274,18 @@
 
         <div class="card">
           <h3>Add Spot</h3>
+          <label for="spotName">Spot naam</label>
           <input id="spotName" placeholder="Spot naam" />
+
+          <label for="spotLat">Latitude</label>
           <input id="spotLat" placeholder="Latitude" readonly />
+
+          <label for="spotLon">Longitude</label>
           <input id="spotLon" placeholder="Longitude" readonly />
+
+          <label for="spotNote">Nota</label>
           <textarea id="spotNote" placeholder="Nota"></textarea>
+
           <button class="action" id="saveSpotBtn">Save Spot</button>
         </div>
       </div>
@@ -272,9 +300,16 @@
       <div class="grid two">
         <div class="card">
           <h3>Trip Planner</h3>
+
+          <label for="tripDate">Date</label>
           <input id="tripDate" type="date" />
+
+          <label for="tripTime">Time</label>
           <input id="tripTime" type="time" />
+
+          <label for="tripNotes">Notes</label>
           <textarea id="tripNotes" placeholder="Skryf jou plan..."></textarea>
+
           <button class="action" id="savePlanBtn">Save Plan</button>
         </div>
         <div class="card">
@@ -288,11 +323,22 @@
       <div class="grid two">
         <div class="card">
           <h3>Log Catch</h3>
+
+          <label for="logDate">Date</label>
           <input id="logDate" type="date" />
+
+          <label for="logFish">Fish</label>
           <select id="logFish"></select>
+
+          <label for="logLength">Lengte cm</label>
           <input id="logLength" type="number" placeholder="Lengte cm" />
+
+          <label for="logSpot">Spot naam</label>
           <input id="logSpot" placeholder="Spot naam" />
+
+          <label for="logNotes">Notas</label>
           <textarea id="logNotes" placeholder="Notas"></textarea>
+
           <button class="action" id="saveCatchBtn">Save Catch</button>
         </div>
 
@@ -635,4 +681,4 @@
     loadWeather();
   </script>
 </body>
-</html>
+  </html>
