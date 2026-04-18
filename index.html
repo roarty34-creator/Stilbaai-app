@@ -1,246 +1,638 @@
 <!DOCTYPE html>
 <html lang="af">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing App V0.5</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fishing App Full Base</title>
+  <style>
+    :root{
+      --bg:#06111b;
+      --bg2:#02070d;
+      --panel:#0d1f2d;
+      --panel2:#123247;
+      --accent:#19c2ff;
+      --text:#f5fbff;
+      --muted:#9eb7c8;
+      --ok:#48d17a;
+      --bad:#ff6b6b;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #06111b;
-  color: white;
-  padding: 16px;
-}
+    *{box-sizing:border-box}
 
-h1 { margin: 0 0 16px 0; }
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(180deg,var(--bg),#03101a 60%,var(--bg2));
+      color:var(--text);
+      padding:16px;
+    }
 
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
+    .app{
+      max-width:1100px;
+      margin:0 auto;
+    }
 
-.tabs button {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  background: #123247;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
 
-.tabs button.active {
-  background: #19c2ff;
-  color: black;
-}
+    .topbar h1{
+      margin:0;
+      font-size:28px;
+    }
 
-.tab { display: none; }
-.tab.active { display: block; }
+    .subtitle{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:4px;
+    }
 
-.card {
-  background: #0d1f2d;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-}
+    .badge{
+      background:var(--accent);
+      color:#00131d;
+      font-weight:bold;
+      padding:8px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
 
-.fish-list {
-  display: grid;
-  gap: 10px;
-}
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
 
-.fish-item {
-  background: #123247;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-}
+    .tab-btn{
+      padding:10px 14px;
+      border:none;
+      border-radius:10px;
+      background:var(--panel2);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+    }
 
-.small {
-  color: #9eb7c8;
-  font-size: 13px;
-}
+    .tab-btn.active{
+      background:var(--accent);
+      color:black;
+    }
 
-button.action {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  background: #19c2ff;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .tab{
+      display:none;
+    }
 
-input, select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: #102636;
-  color: white;
-  margin-bottom: 12px;
-}
-</style>
+    .tab.active{
+      display:block;
+    }
+
+    .card{
+      background:var(--panel);
+      padding:16px;
+      border-radius:14px;
+      margin-bottom:12px;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .grid.two{
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .fish-list,.log-list,.spot-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .fish-item,.spot,.log-item{
+      background:var(--panel2);
+      padding:12px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .fish-item:hover{
+      opacity:.95;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:none;
+      background:#102636;
+      color:white;
+      margin-bottom:12px;
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    button.action{
+      padding:10px 14px;
+      border:none;
+      border-radius:10px;
+      background:var(--accent);
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+      margin-right:8px;
+      margin-bottom:8px;
+    }
+
+    .ok{color:var(--ok);font-weight:bold}
+    .bad{color:var(--bad);font-weight:bold}
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1>🎣 Fishing App</h1>
+        <div class="subtitle">Full base van dag 1 tot nou</div>
+      </div>
+      <div class="badge">Base 1</div>
+    </div>
 
-<h1>🎣 Fishing App</h1>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="home">Home</button>
+      <button class="tab-btn" data-tab="weather">Weather</button>
+      <button class="tab-btn" data-tab="fish">Fish</button>
+      <button class="tab-btn" data-tab="legal">Legal</button>
+      <button class="tab-btn" data-tab="map">Map</button>
+      <button class="tab-btn" data-tab="planner">Planner</button>
+      <button class="tab-btn" data-tab="log">Catch Log</button>
+      <button class="tab-btn" data-tab="tides">Tides</button>
+    </div>
 
-<div class="tabs">
-  <button class="tabBtn active" data-tab="home">Home</button>
-  <button class="tabBtn" data-tab="fish">Fish</button>
-  <button class="tabBtn" data-tab="legal">Legal</button>
-  <button class="tabBtn" data-tab="map">Map</button>
-</div>
+    <section id="home" class="tab active">
+      <div class="grid two">
+        <div class="card">
+          <h3>Status</h3>
+          <div id="homeStatus">App gelaai.</div>
+        </div>
+        <div class="card">
+          <h3>Wat is in</h3>
+          <div class="small">
+            Weather, fish, legal checker, GPS spots, planner, catch log, tides notes.
+          </div>
+        </div>
+      </div>
 
-<div id="home" class="tab active">
-  <div class="card">
-    Meer Stilbaai-visse is nou in. Die basis bly eenvoudig sodat niks breek nie.
+      <div class="card">
+        <h3>Quick Notes</h3>
+        <div class="small">
+          Hierdie is nou ’n stabiele full base. Van hier af bou ons net op hierdie weergawe.
+        </div>
+      </div>
+    </section>
+
+    <section id="weather" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Current Weather</h3>
+          <div id="weatherNow" class="small">Loading...</div>
+        </div>
+        <div class="card">
+          <h3>Week Temps</h3>
+          <div id="weekTemps" class="small">Loading...</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fish" class="tab">
+      <div class="card">
+        <h3>Fish Search</h3>
+        <input id="fishSearch" placeholder="Soek vis naam..." />
+      </div>
+
+      <div class="card">
+        <h3>Fish List</h3>
+        <div id="fishList" class="fish-list"></div>
+      </div>
+
+      <div id="fishDetailCard" class="card" style="display:none;"></div>
+    </section>
+
+    <section id="legal" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Legal Checker</h3>
+          <select id="legalFish"></select>
+          <input id="legalSize" type="number" placeholder="Lengte cm" />
+          <button class="action" id="checkBtn">Check</button>
+        </div>
+        <div class="card">
+          <h3>Result</h3>
+          <div id="legalResult" class="small">Nog niks gecheck nie.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>GPS</h3>
+          <button class="action" id="useGpsBtn">Use My GPS</button>
+          <button class="action" id="saveGpsSpotBtn">Save Current GPS Spot</button>
+          <div id="gpsStatus" class="small">Nog geen GPS nie.</div>
+        </div>
+
+        <div class="card">
+          <h3>Add Spot</h3>
+          <input id="spotName" placeholder="Spot naam" />
+          <input id="spotLat" placeholder="Latitude" readonly />
+          <input id="spotLon" placeholder="Longitude" readonly />
+          <textarea id="spotNote" placeholder="Nota"></textarea>
+          <button class="action" id="saveSpotBtn">Save Spot</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Saved Spots</h3>
+        <div id="spotsList" class="spot-list"></div>
+      </div>
+    </section>
+
+    <section id="planner" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Trip Planner</h3>
+          <input id="tripDate" type="date" />
+          <input id="tripTime" type="time" />
+          <textarea id="tripNotes" placeholder="Skryf jou plan..."></textarea>
+          <button class="action" id="savePlanBtn">Save Plan</button>
+        </div>
+        <div class="card">
+          <h3>Saved Plan</h3>
+          <div id="savedPlan" class="small">Nog niks gestoor nie.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="log" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Log Catch</h3>
+          <input id="logDate" type="date" />
+          <select id="logFish"></select>
+          <input id="logLength" type="number" placeholder="Lengte cm" />
+          <input id="logSpot" placeholder="Spot naam" />
+          <textarea id="logNotes" placeholder="Notas"></textarea>
+          <button class="action" id="saveCatchBtn">Save Catch</button>
+        </div>
+
+        <div class="card">
+          <h3>Catch History</h3>
+          <div id="catchList" class="log-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tides" class="tab">
+      <div class="grid two">
+        <div class="card">
+          <h3>Tides</h3>
+          <div class="small">Gebruik local tide source vir presiese high / low tye.</div>
+        </div>
+        <div class="card">
+          <h3>Tide Notes</h3>
+          <textarea id="tideNotes" placeholder="Skryf jou tide notas..."></textarea>
+          <button class="action" id="saveTideBtn">Save Tide Notes</button>
+        </div>
+      </div>
+    </section>
   </div>
-</div>
 
-<div id="fish" class="tab">
-  <div class="card">
-    <h3>Fish Search</h3>
-    <input id="fishSearch" placeholder="Soek vis naam...">
-  </div>
+  <script>
+    const fishData = [
+      { name: "kob", local: "kob", size: 60, bag: 5, bait: "okka / chokka / sard" },
+      { name: "cape yellowtail", local: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
+      { name: "cape salmon", local: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait" },
+      { name: "hottentot", local: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" },
+      { name: "roman", local: "roman / red roman", size: 30, bag: 2, bait: "okka / sard / chokka" },
+      { name: "dageraad", local: "dageraad", size: 40, bag: 1, bait: "okka / red bait" },
+      { name: "santer", local: "santer", size: 30, bag: 5, bait: "okka / sard strips" },
+      { name: "elf", local: "elf / shad", size: 30, bag: 4, bait: "sard / spoon / plug" },
+      { name: "bonito", local: "bonito", size: 0, bag: 10, bait: "small lure / feather / spoon" },
+      { name: "poensie", local: "poensie", size: 0, bag: 10, bait: "okka / sard" },
+      { name: "carpenter", local: "silverfish / carpenter", size: 35, bag: 4, bait: "okka strips / sard" },
+      { name: "red stumpnose", local: "miss lucy / red stumpnose", size: 30, bag: 1, bait: "okka / sard" },
+      { name: "yellowbelly rockcod", local: "yellowbelly rockcod", size: 60, bag: 1, bait: "okka / sard" }
+    ];
 
-  <div class="card">
-    <h3>Fish</h3>
-    <div id="fishList" class="fish-list"></div>
-  </div>
+    let currentLat = "";
+    let currentLon = "";
 
-  <div id="fishDetailCard" class="card" style="display:none;"></div>
-</div>
+    function openTab(id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+    }
 
-<div id="legal" class="tab">
-  <div class="card">
-    <h3>Legal Checker</h3>
-    <select id="legalFish"></select>
-    <input id="legalSize" type="number" placeholder="Lengte cm">
-    <button class="action" id="checkBtn">Check</button>
-    <div id="legalResult" class="small">Nog niks gecheck nie.</div>
-  </div>
-</div>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => openTab(btn.getAttribute('data-tab')));
+    });
 
-<div id="map" class="tab">
-  <div class="card">
-    <h3>Map</h3>
-    Map bly nog eenvoudig in hierdie stap.
-  </div>
-</div>
+    function renderFish(list = fishData){
+      const box = document.getElementById('fishList');
+      box.innerHTML = '';
 
-<script>
-const fishData = [
-  { name: "kob", local: "kob", size: 60, bag: 1, bait: "okka / chokka / sard" },
-  { name: "geelstert", local: "geelstert", size: 0, bag: 10, bait: "live bait / sard / plug" },
-  { name: "geelbek", local: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait" },
-  { name: "hottentot", local: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel" },
-  { name: "roman", local: "red roman / roman", size: 30, bag: 2, bait: "okka / sard / chokka" },
-  { name: "dageraad", local: "dageraad", size: 40, bag: 1, bait: "okka / red bait" },
-  { name: "santer", local: "santer", size: 30, bag: 5, bait: "okka / sard strips" },
-  { name: "elf", local: "elf / shad", size: 30, bag: 4, bait: "sard / spoon / plug" },
-  { name: "bonito", local: "bonito", size: 0, bag: 10, bait: "small lure / feather / spoon" },
-  { name: "poensie", local: "poensie", size: 0, bag: 10, bait: "okka / sard" },
-  { name: "carpenter", local: "silverfish / carpenter", size: 35, bag: 4, bait: "okka strips / sard" },
-  { name: "miss lucy", local: "miss lucy / red stumpnose", size: 30, bag: 1, bait: "okka / sard" },
-  { name: "yellowbelly rockcod", local: "yellowbelly rockcod", size: 60, bag: 1, bait: "okka / sard" }
-];
+      if (!list.length) {
+        box.innerHTML = `<div class="small">Geen vis gekry nie.</div>`;
+        return;
+      }
 
-function openTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelector(`.tabBtn[data-tab="${id}"]`).classList.add('active');
-}
+      list.forEach(f => {
+        let d = document.createElement('div');
+        d.className = 'fish-item';
+        d.innerHTML = `
+          <strong>${f.local}</strong><br>
+          <span class="small">${f.size} cm | bag ${f.bag}</span>
+        `;
+        d.onclick = () => showFish(f);
+        box.appendChild(d);
+      });
+    }
 
-document.querySelectorAll('.tabBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    openTab(btn.getAttribute('data-tab'));
-  });
-});
+    function showFish(f){
+      let d = document.getElementById('fishDetailCard');
+      d.style.display = 'block';
+      d.innerHTML = `
+        <h3>${f.local}</h3>
+        <p><strong>Reference name:</strong> ${f.name}</p>
+        <p><strong>Minimum size:</strong> ${f.size} cm</p>
+        <p><strong>Bag limit:</strong> ${f.bag}</p>
+        <p><strong>Bait:</strong> ${f.bait}</p>
+        <button class="action" id="backFishBtn">Back</button>
+      `;
+      document.getElementById('backFishBtn').onclick = hideFish;
+    }
 
-function renderFish(list = fishData){
-  const box = document.getElementById('fishList');
-  box.innerHTML = '';
+    function hideFish(){
+      document.getElementById('fishDetailCard').style.display = 'none';
+    }
 
-  if (!list.length) {
-    box.innerHTML = `<div class="small">Geen vis gekry nie.</div>`;
-    return;
-  }
+    document.getElementById('fishSearch').addEventListener('input', () => {
+      let q = document.getElementById('fishSearch').value.toLowerCase().trim();
+      let filtered = fishData.filter(f =>
+        f.name.toLowerCase().includes(q) ||
+        f.local.toLowerCase().includes(q)
+      );
+      renderFish(filtered);
+    });
 
-  list.forEach(f => {
-    let d = document.createElement('div');
-    d.className = 'fish-item';
-    d.innerHTML = `
-      <strong>${f.local}</strong><br>
-      <span class="small">${f.size} cm | bag ${f.bag}</span>
-    `;
-    d.onclick = () => showFish(f);
-    box.appendChild(d);
-  });
-}
+    function loadLegal(){
+      let sel = document.getElementById('legalFish');
+      let logSel = document.getElementById('logFish');
+      const options = fishData.map(f => `<option value="${f.name}">${f.local}</option>`).join('');
+      sel.innerHTML = options;
+      logSel.innerHTML = options;
+    }
 
-function showFish(f){
-  let d = document.getElementById('fishDetailCard');
-  d.style.display = 'block';
-  d.innerHTML = `
-    <h3>${f.local}</h3>
-    <p><strong>English / reference name:</strong> ${f.name}</p>
-    <p><strong>Minimum size:</strong> ${f.size} cm</p>
-    <p><strong>Bag limit:</strong> ${f.bag}</p>
-    <p><strong>Bait:</strong> ${f.bait}</p>
-    <button class="action" id="backFishBtn">Back</button>
-  `;
+    document.getElementById('checkBtn').onclick = () => {
+      let name = document.getElementById('legalFish').value;
+      let size = Number(document.getElementById('legalSize').value);
+      let f = fishData.find(x => x.name === name);
 
-  document.getElementById('backFishBtn').addEventListener('click', hideFish);
-}
+      if (!f || !size) {
+        document.getElementById('legalResult').innerHTML = "Tik eers lengte in.";
+        return;
+      }
 
-function hideFish(){
-  document.getElementById('fishDetailCard').style.display = 'none';
-}
+      if (f.size === 0 || size >= f.size) {
+        document.getElementById('legalResult').innerHTML =
+          `✔ Wettig<br>${f.local}<br>Min size: ${f.size} cm<br>Bag: ${f.bag}`;
+      } else {
+        document.getElementById('legalResult').innerHTML =
+          `❌ Te klein<br>${f.local}<br>Min size: ${f.size} cm<br>Jou vis: ${size} cm`;
+      }
+    };
 
-document.getElementById('fishSearch').addEventListener('input', () => {
-  let q = document.getElementById('fishSearch').value.toLowerCase().trim();
-  let filtered = fishData.filter(f =>
-    f.name.toLowerCase().includes(q) ||
-    f.local.toLowerCase().includes(q)
-  );
-  renderFish(filtered);
-});
+    function getSavedSpots(){
+      return JSON.parse(localStorage.getItem('fullbase_spots') || '[]');
+    }
 
-function loadLegal(){
-  let sel = document.getElementById('legalFish');
-  sel.innerHTML = fishData.map(f => `<option value="${f.name}">${f.local}</option>`).join('');
-}
+    function saveSavedSpots(spots){
+      localStorage.setItem('fullbase_spots', JSON.stringify(spots));
+    }
 
-document.getElementById('checkBtn').onclick = () => {
-  let name = document.getElementById('legalFish').value;
-  let size = Number(document.getElementById('legalSize').value);
-  let f = fishData.find(x => x.name === name);
+    function renderSpots(){
+      const spots = getSavedSpots();
+      const box = document.getElementById('spotsList');
 
-  if (!f || !size) {
-    document.getElementById('legalResult').innerHTML = "Tik eers lengte in.";
-    return;
-  }
+      if (!spots.length) {
+        box.innerHTML = `<div class="small">Nog geen saved spots nie.</div>`;
+        return;
+      }
 
-  if (f.size === 0 || size >= f.size) {
-    document.getElementById('legalResult').innerHTML =
-      `✔ Wettig<br>${f.local}<br>Min size: ${f.size} cm<br>Bag: ${f.bag}`;
-  } else {
-    document.getElementById('legalResult').innerHTML =
-      `❌ Te klein<br>${f.local}<br>Min size: ${f.size} cm<br>Jou vis: ${size} cm`;
-  }
-};
+      box.innerHTML = spots.map(s => `
+        <div class="spot">
+          <strong>${s.name}</strong><br>
+          <span class="small">${s.lat}, ${s.lon}</span><br><br>
+          ${s.note || ""}
+        </div>
+      `).join('');
+    }
 
-renderFish();
-loadLegal();
-</script>
+    document.getElementById('useGpsBtn').onclick = () => {
+      if (!navigator.geolocation) {
+        document.getElementById('gpsStatus').textContent = "GPS nie beskikbaar nie.";
+        return;
+      }
 
+      document.getElementById('gpsStatus').textContent = "Besig om GPS te kry...";
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          currentLat = pos.coords.latitude.toFixed(6);
+          currentLon = pos.coords.longitude.toFixed(6);
+          document.getElementById('gpsStatus').textContent = `GPS: ${currentLat}, ${currentLon}`;
+          document.getElementById('spotLat').value = currentLat;
+          document.getElementById('spotLon').value = currentLon;
+        },
+        () => {
+          document.getElementById('gpsStatus').textContent = "Kon nie GPS kry nie.";
+        },
+        { enableHighAccuracy:true, timeout:20000, maximumAge:0 }
+      );
+    };
+
+    document.getElementById('saveGpsSpotBtn').onclick = () => {
+      if (!currentLat || !currentLon) {
+        alert("Druk eers Use My GPS.");
+        return;
+      }
+
+      const name = prompt("Naam vir GPS spot?");
+      if (!name) return;
+      const note = prompt("Nota?") || "";
+
+      const spots = getSavedSpots();
+      spots.push({ name, lat: currentLat, lon: currentLon, note });
+      saveSavedSpots(spots);
+      renderSpots();
+      document.getElementById('homeStatus').textContent = "GPS spot saved.";
+    };
+
+    document.getElementById('saveSpotBtn').onclick = () => {
+      const name = document.getElementById('spotName').value.trim();
+      const lat = document.getElementById('spotLat').value.trim();
+      const lon = document.getElementById('spotLon').value.trim();
+      const note = document.getElementById('spotNote').value.trim();
+
+      if (!name) {
+        alert("Tik eers spot naam.");
+        return;
+      }
+      if (!lat || !lon) {
+        alert("Druk eers Use My GPS.");
+        return;
+      }
+
+      const spots = getSavedSpots();
+      spots.push({ name, lat, lon, note });
+      saveSavedSpots(spots);
+      renderSpots();
+
+      document.getElementById('spotName').value = "";
+      document.getElementById('spotNote').value = "";
+      document.getElementById('homeStatus').textContent = "Spot saved.";
+    };
+
+    function getSavedPlan(){
+      return JSON.parse(localStorage.getItem('fullbase_plan') || 'null');
+    }
+
+    function renderPlan(){
+      const plan = getSavedPlan();
+      const box = document.getElementById('savedPlan');
+
+      if (!plan) {
+        box.innerHTML = "Nog niks gestoor nie.";
+        return;
+      }
+
+      box.innerHTML = `
+        Datum: ${plan.date || "-"}<br>
+        Tyd: ${plan.time || "-"}<br>
+        Notes: ${plan.notes || "-"}
+      `;
+    }
+
+    document.getElementById('savePlanBtn').onclick = () => {
+      const plan = {
+        date: document.getElementById('tripDate').value,
+        time: document.getElementById('tripTime').value,
+        notes: document.getElementById('tripNotes').value
+      };
+      localStorage.setItem('fullbase_plan', JSON.stringify(plan));
+      renderPlan();
+      document.getElementById('homeStatus').textContent = "Plan saved.";
+    };
+
+    function getCatchLog(){
+      return JSON.parse(localStorage.getItem('fullbase_log') || '[]');
+    }
+
+    function saveCatchLog(items){
+      localStorage.setItem('fullbase_log', JSON.stringify(items));
+    }
+
+    function renderCatchLog(){
+      const items = getCatchLog();
+      const box = document.getElementById('catchList');
+
+      if (!items.length) {
+        box.innerHTML = `<div class="small">Nog geen catches nie.</div>`;
+        return;
+      }
+
+      box.innerHTML = items.map(item => `
+        <div class="log-item">
+          <strong>${item.fish}</strong><br>
+          <span class="small">${item.date || "-"} | ${item.length || "-"} cm | ${item.spot || "-"}</span><br><br>
+          ${item.notes || ""}
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('saveCatchBtn').onclick = () => {
+      const fishName = document.getElementById('logFish').selectedOptions[0]?.textContent || "";
+      const entry = {
+        date: document.getElementById('logDate').value,
+        fish: fishName,
+        length: document.getElementById('logLength').value,
+        spot: document.getElementById('logSpot').value,
+        notes: document.getElementById('logNotes').value
+      };
+
+      const items = getCatchLog();
+      items.unshift(entry);
+      saveCatchLog(items);
+      renderCatchLog();
+      document.getElementById('homeStatus').textContent = "Catch saved.";
+    };
+
+    document.getElementById('saveTideBtn').onclick = () => {
+      localStorage.setItem('fullbase_tides', document.getElementById('tideNotes').value);
+      document.getElementById('homeStatus').textContent = "Tide notes saved.";
+    };
+
+    async function loadWeather(){
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.37&longitude=21.42&current=wind_speed_10m,wind_direction_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min&timezone=auto');
+        const data = await res.json();
+        const c = data.current || {};
+        const d = data.daily || {};
+
+        document.getElementById('weatherNow').innerHTML =
+          `Wind: ${c.wind_speed_10m ?? "-"} km/h<br>Direction: ${c.wind_direction_10m ?? "-"}°<br>Cloud: ${c.cloud_cover ?? "-"}%`;
+
+        const dates = d.time || [];
+        const maxs = d.temperature_2m_max || [];
+        const mins = d.temperature_2m_min || [];
+
+        if (!dates.length) {
+          document.getElementById('weekTemps').innerHTML = "Geen temps nie.";
+          return;
+        }
+
+        document.getElementById('weekTemps').innerHTML = dates.slice(0,5).map((date, i) => `
+          <div class="spot">
+            <strong>${date}</strong><br>
+            Day: ${maxs[i] ?? "-"}°C<br>
+            Night: ${mins[i] ?? "-"}°C
+          </div>
+        `).join('');
+      } catch {
+        document.getElementById('weatherNow').innerHTML = "Weather kon nie laai nie.";
+        document.getElementById('weekTemps').innerHTML = "Temps kon nie laai nie.";
+      }
+    }
+
+    renderFish();
+    loadLegal();
+    renderSpots();
+    renderPlan();
+    renderCatchLog();
+    document.getElementById('tideNotes').value = localStorage.getItem('fullbase_tides') || '';
+    loadWeather();
+  </script>
 </body>
 </html>
