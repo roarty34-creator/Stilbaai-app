@@ -525,9 +525,12 @@
         return;
       }
 
-      const name = prompt("Naam vir GPS spot?");
+      const typedName = document.getElementById('spotName').value.trim();
+      const name = typedName || prompt("Naam vir GPS spot?");
       if (!name) return;
-      const note = prompt("Nota?") || "";
+
+      const noteField = document.getElementById('spotNote').value.trim();
+      const note = noteField || prompt("Nota?") || "";
 
       const spots = getSavedSpots();
       spots.push({ name, lat: currentLat, lon: currentLon, note });
