@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fishing App V1.8</title>
+  <title>Fishing App V1.9</title>
   <style>
     :root{
       --bg:#06111b;
@@ -16,6 +16,7 @@
       --muted:#9eb7c8;
       --ok:#48d17a;
       --bad:#ff6b6b;
+      --warn:#ffb84d;
     }
 
     *{box-sizing:border-box}
@@ -263,6 +264,26 @@
 
     .ok{color:var(--ok);font-weight:bold}
     .bad{color:var(--bad);font-weight:bold}
+    .warn{color:var(--warn);font-weight:bold}
+
+    .tag{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      margin-top:8px;
+    }
+
+    .tag-ok{
+      background:rgba(72,209,122,.15);
+      color:var(--ok);
+    }
+
+    .tag-bad{
+      background:rgba(255,107,107,.15);
+      color:var(--bad);
+    }
 
     @media (max-width:700px){
       body{padding:12px}
@@ -278,7 +299,7 @@
         <h1>🎣 Fishing App</h1>
         <div class="subtitle">Stilbaai build</div>
       </div>
-      <div class="badge">V1.8</div>
+      <div class="badge">V1.9</div>
     </div>
 
     <div class="tabs">
@@ -440,6 +461,7 @@
           <textarea id="logNotes" placeholder="Notas"></textarea>
 
           <button class="action" id="saveCatchBtn">Save Catch</button>
+          <div id="logCheckResult" class="small"></div>
         </div>
 
         <div class="card">
@@ -466,19 +488,19 @@
 
   <script>
     const fishData = [
-      { name: "kob", local: "kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟" },
-      { name: "geelstert", local: "geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡" },
-      { name: "geelbek", local: "geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊" },
-      { name: "hottentot", local: "hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠" },
-      { name: "roman", local: "roman (red roman)", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴" },
-      { name: "dageraad", local: "dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅" },
-      { name: "santer", local: "santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶" },
-      { name: "elf", local: "elf (shad)", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡" },
-      { name: "bonito", local: "bonito", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨" },
-      { name: "poensie", local: "poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝" },
-      { name: "carpenter", local: "silverfish (carpenter)", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈" },
-      { name: "stumpnose", local: "miss lucy (red stumpnose)", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗" },
-      { name: "rockcod", local: "yellowbelly rockcod", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨" }
+      { name: "kob", local: "Kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟" },
+      { name: "geelstert", local: "Geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡" },
+      { name: "geelbek", local: "Geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊" },
+      { name: "hottentot", local: "Hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠" },
+      { name: "roman", local: "Roman", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴" },
+      { name: "dageraad", local: "Dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅" },
+      { name: "santer", local: "Santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶" },
+      { name: "elf", local: "Elf / Shad", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡" },
+      { name: "bonito", local: "Bonito", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨" },
+      { name: "poensie", local: "Poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝" },
+      { name: "carpenter", local: "Silverfish / Carpenter", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈" },
+      { name: "stumpnose", local: "Miss Lucy / Red Stumpnose", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗" },
+      { name: "rockcod", local: "Yellowbelly Rockcod", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨" }
     ];
 
     let currentLat = "";
@@ -734,21 +756,34 @@
       box.innerHTML = items.map(item => `
         <div class="log-item">
           <strong>${item.fish}</strong><br>
-          <span class="small">${item.date || "-"} | ${item.length || "-"} cm | ${item.spot || "-"}</span><br><br>
+          <span class="small">${item.date || "-"} | ${item.length || "-"} cm | ${item.spot || "-"}</span><br>
+          ${item.tooSmall ? '<span class="tag tag-bad">TE KLEIN</span>' : '<span class="tag tag-ok">OK</span>'}<br><br>
           ${item.notes || ""}
         </div>
       `).join('');
     }
 
     document.getElementById('saveCatchBtn').onclick = () => {
-      const fishName = document.getElementById('logFish').selectedOptions[0]?.textContent || "";
+      const fishValue = document.getElementById('logFish').value;
+      const fishObj = fishData.find(f => f.name === fishValue);
+      const fishName = fishObj ? fishObj.local : "";
+      const length = Number(document.getElementById('logLength').value);
+      const tooSmall = fishObj ? !(fishObj.size === 0 || length >= fishObj.size) : false;
+
       const entry = {
         date: document.getElementById('logDate').value,
         fish: fishName,
         length: document.getElementById('logLength').value,
         spot: document.getElementById('logSpot').value,
-        notes: document.getElementById('logNotes').value
+        notes: document.getElementById('logNotes').value,
+        tooSmall: tooSmall
       };
+
+      if (tooSmall) {
+        document.getElementById('logCheckResult').innerHTML = `<span class="bad">❌ Hierdie vis is te klein vir ${fishName}</span>`;
+      } else {
+        document.getElementById('logCheckResult').innerHTML = `<span class="ok">✔ Grootte lyk reg vir ${fishName}</span>`;
+      }
 
       const items = getCatchLog();
       items.unshift(entry);
