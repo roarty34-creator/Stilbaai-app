@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fishing App V1.9</title>
+  <title>Fishing App V2.0</title>
   <style>
     :root{
       --bg:#06111b;
@@ -128,12 +128,31 @@
     }
 
     .fish-photo{
-      height:120px;
+      height:130px;
       background:linear-gradient(135deg,#123247,#0a1d2b);
       display:flex;
       align-items:center;
       justify-content:center;
       font-size:42px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .fish-photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .fish-fallback{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:42px;
+      background:linear-gradient(135deg,#123247,#0a1d2b);
     }
 
     .fish-body{
@@ -159,7 +178,7 @@
     }
 
     .detail-photo{
-      height:160px;
+      height:220px;
       border-radius:12px;
       background:linear-gradient(135deg,#123247,#0a1d2b);
       display:flex;
@@ -167,6 +186,25 @@
       justify-content:center;
       font-size:56px;
       margin-bottom:12px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .detail-photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .detail-fallback{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:56px;
+      background:linear-gradient(135deg,#123247,#0a1d2b);
     }
 
     .pill-grid{
@@ -299,7 +337,7 @@
         <h1>🎣 Fishing App</h1>
         <div class="subtitle">Stilbaai build</div>
       </div>
-      <div class="badge">V1.9</div>
+      <div class="badge">V2.0</div>
     </div>
 
     <div class="tabs">
@@ -321,7 +359,7 @@
         </div>
         <div class="card">
           <h3>Wat is in</h3>
-          <div class="small">Weather, fish cards, legal checker, GPS spots, planner, catch log, tides notes.</div>
+          <div class="small">Weather, fish photos, legal checker, GPS spots, planner, catch log, tides notes.</div>
         </div>
       </div>
     </section>
@@ -488,19 +526,19 @@
 
   <script>
     const fishData = [
-      { name: "kob", local: "Kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟" },
-      { name: "geelstert", local: "Geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡" },
-      { name: "geelbek", local: "Geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊" },
-      { name: "hottentot", local: "Hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠" },
-      { name: "roman", local: "Roman", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴" },
-      { name: "dageraad", local: "Dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅" },
-      { name: "santer", local: "Santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶" },
-      { name: "elf", local: "Elf / Shad", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡" },
-      { name: "bonito", local: "Bonito", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨" },
-      { name: "poensie", local: "Poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝" },
-      { name: "carpenter", local: "Silverfish / Carpenter", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈" },
-      { name: "stumpnose", local: "Miss Lucy / Red Stumpnose", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗" },
-      { name: "rockcod", local: "Yellowbelly Rockcod", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨" }
+      { name: "kob", local: "Kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟", photo: "images/kob.jpg" },
+      { name: "geelstert", local: "Geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡", photo: "images/geelstert.jpg" },
+      { name: "geelbek", local: "Geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊", photo: "images/geelbek.jpg" },
+      { name: "hottentot", local: "Hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠", photo: "images/hottentot.jpg" },
+      { name: "roman", local: "Roman", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴", photo: "images/roman.jpg" },
+      { name: "dageraad", local: "Dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅", photo: "images/dageraad.jpg" },
+      { name: "santer", local: "Santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶", photo: "images/santer.jpg" },
+      { name: "elf", local: "Elf", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡", photo: "images/elf.jpg" },
+      { name: "bonito", local: "Bonnies", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨", photo: "images/bonnies.jpg" },
+      { name: "poensie", local: "Poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝", photo: "images/poensie.jpg" },
+      { name: "carpenter", local: "Silverfish", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈", photo: "images/silverfish.jpg" },
+      { name: "stumpnose", local: "Miss Lucy", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗", photo: "images/miss-lucy.jpg" },
+      { name: "rockcod", local: "Yellowbelly", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨", photo: "images/yellowbelly.jpg" }
     ];
 
     let currentLat = "";
@@ -530,7 +568,10 @@
         let d = document.createElement('div');
         d.className = 'fish-card';
         d.innerHTML = `
-          <div class="fish-photo">${f.emoji}</div>
+          <div class="fish-photo">
+            <img src="${f.photo}" alt="${f.local}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="fish-fallback" style="display:none;">${f.emoji}</div>
+          </div>
           <div class="fish-body">
             <div class="fish-title">${f.local}</div>
             <div class="fish-meta">${f.size} cm | bag ${f.bag}</div>
@@ -546,7 +587,10 @@
       d.style.display = 'block';
       d.innerHTML = `
         <div class="detail-hero">
-          <div class="detail-photo">${f.emoji}</div>
+          <div class="detail-photo">
+            <img src="${f.photo}" alt="${f.local}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="detail-fallback" style="display:none;">${f.emoji}</div>
+          </div>
           <h3>${f.local}</h3>
           <div class="small">Tap back om terug te gaan.</div>
         </div>
@@ -838,4 +882,4 @@
     loadWeather();
   </script>
 </body>
-  </html>
+</html>
