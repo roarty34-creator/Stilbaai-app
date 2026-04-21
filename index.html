@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fishing App V2.0</title>
+  <title>Fishing App Final</title>
   <style>
     :root{
       --bg:#06111b;
@@ -16,7 +16,6 @@
       --muted:#9eb7c8;
       --ok:#48d17a;
       --bad:#ff6b6b;
-      --warn:#ffb84d;
     }
 
     *{box-sizing:border-box}
@@ -120,11 +119,6 @@
       overflow:hidden;
       cursor:pointer;
       box-shadow:0 6px 18px rgba(0,0,0,.18);
-      transition:transform .15s ease;
-    }
-
-    .fish-card:active{
-      transform:scale(.98);
     }
 
     .fish-photo{
@@ -133,9 +127,8 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:42px;
-      position:relative;
       overflow:hidden;
+      position:relative;
     }
 
     .fish-photo img{
@@ -148,10 +141,10 @@
     .fish-fallback{
       position:absolute;
       inset:0;
-      display:flex;
+      display:none;
       align-items:center;
       justify-content:center;
-      font-size:42px;
+      font-size:40px;
       background:linear-gradient(135deg,#123247,#0a1d2b);
     }
 
@@ -180,14 +173,10 @@
     .detail-photo{
       height:220px;
       border-radius:12px;
-      background:linear-gradient(135deg,#123247,#0a1d2b);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:56px;
-      margin-bottom:12px;
-      position:relative;
       overflow:hidden;
+      position:relative;
+      background:linear-gradient(135deg,#123247,#0a1d2b);
+      margin-bottom:12px;
     }
 
     .detail-photo img{
@@ -200,7 +189,7 @@
     .detail-fallback{
       position:absolute;
       inset:0;
-      display:flex;
+      display:none;
       align-items:center;
       justify-content:center;
       font-size:56px;
@@ -229,34 +218,6 @@
       background:var(--panel2);
       padding:12px;
       border-radius:10px;
-    }
-
-    .map-hero{
-      background:linear-gradient(135deg,#103049,#0b1b29);
-      border-radius:16px;
-      padding:16px;
-      margin-bottom:12px;
-    }
-
-    .gps-box{
-      background:var(--panel2);
-      border-radius:14px;
-      padding:14px;
-      margin-top:10px;
-    }
-
-    .coords{
-      font-size:18px;
-      font-weight:bold;
-      margin-top:8px;
-      word-break:break-word;
-    }
-
-    .last-saved{
-      background:var(--panel3);
-      border-radius:14px;
-      padding:14px;
-      margin-top:12px;
     }
 
     input, select, textarea{
@@ -302,7 +263,6 @@
 
     .ok{color:var(--ok);font-weight:bold}
     .bad{color:var(--bad);font-weight:bold}
-    .warn{color:var(--warn);font-weight:bold}
 
     .tag{
       display:inline-block;
@@ -335,9 +295,9 @@
     <div class="topbar">
       <div>
         <h1>🎣 Fishing App</h1>
-        <div class="subtitle">Stilbaai build</div>
+        <div class="subtitle">Final build</div>
       </div>
-      <div class="badge">V2.0</div>
+      <div class="badge">FINAL</div>
     </div>
 
     <div class="tabs">
@@ -359,7 +319,7 @@
         </div>
         <div class="card">
           <h3>Wat is in</h3>
-          <div class="small">Weather, fish photos, legal checker, GPS spots, planner, catch log, tides notes.</div>
+          <div class="small">Fish photos, legal checker, GPS spots, planner, catch log, tides notes, weather.</div>
         </div>
       </div>
     </section>
@@ -411,26 +371,14 @@
     </section>
 
     <section id="map" class="tab">
-      <div class="map-hero">
-        <h3 style="margin:0 0 8px;">Map / GPS</h3>
-        <div class="small">Gebruik GPS, gee jou spot ’n naam, en save hom vir later.</div>
-
-        <div class="gps-box">
-          <div class="small">Current GPS</div>
-          <div id="gpsStatus" class="coords">Nog geen GPS nie.</div>
-          <div style="margin-top:12px;">
-            <button class="action" id="useGpsBtn">Use My GPS</button>
-            <button class="action" id="saveGpsSpotBtn">Save Current GPS Spot</button>
-          </div>
-        </div>
-
-        <div id="lastSavedBox" class="last-saved">
-          <div class="small">Last saved spot</div>
-          <div id="lastSavedSpot">Nog niks gestoor nie.</div>
-        </div>
-      </div>
-
       <div class="grid two">
+        <div class="card">
+          <h3>GPS</h3>
+          <button class="action" id="useGpsBtn">Use My GPS</button>
+          <button class="action" id="saveGpsSpotBtn">Save Current GPS Spot</button>
+          <div id="gpsStatus" class="small">Nog geen GPS nie.</div>
+        </div>
+
         <div class="card">
           <h3>Add Spot</h3>
           <label for="spotName">Spot naam</label>
@@ -447,11 +395,11 @@
 
           <button class="action" id="saveSpotBtn">Save Spot</button>
         </div>
+      </div>
 
-        <div class="card">
-          <h3>Saved Spots</h3>
-          <div id="spotsList" class="spot-list"></div>
-        </div>
+      <div class="card">
+        <h3>Saved Spots</h3>
+        <div id="spotsList" class="spot-list"></div>
       </div>
     </section>
 
@@ -526,19 +474,19 @@
 
   <script>
     const fishData = [
-      { name: "kob", local: "Kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟", photo: "images/kob.jpg" },
-      { name: "geelstert", local: "Geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡", photo: "images/geelstert.jpg" },
-      { name: "geelbek", local: "Geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊", photo: "images/geelbek.jpg" },
-      { name: "hottentot", local: "Hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠", photo: "images/hottentot.jpg" },
-      { name: "roman", local: "Roman", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴", photo: "images/roman.jpg" },
-      { name: "dageraad", local: "Dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅", photo: "images/dageraad.jpg" },
-      { name: "santer", local: "Santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶", photo: "images/santer.jpg" },
-      { name: "elf", local: "Elf", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡", photo: "images/elf.jpg" },
-      { name: "bonito", local: "Bonnies", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨", photo: "images/bonnies.jpg" },
-      { name: "poensie", local: "Poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝", photo: "images/poensie.jpg" },
-      { name: "carpenter", local: "Silverfish", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈", photo: "images/silverfish.jpg" },
-      { name: "stumpnose", local: "Miss Lucy", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗", photo: "images/miss-lucy.jpg" },
-      { name: "rockcod", local: "Yellowbelly", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨", photo: "images/yellowbelly.jpg" }
+      { name: "kob", local: "Kob", size: 60, bag: 5, bait: "chokka / sard / live bait", emoji: "🐟", photo: "kob.jpg" },
+      { name: "geelstert", local: "Geelstert", size: 0, bag: 10, bait: "live bait / plug / spoon", emoji: "🟡", photo: "geelstert.jpg" },
+      { name: "geelbek", local: "Geelbek", size: 60, bag: 2, bait: "chokka / sard / live bait", emoji: "🌊", photo: "geelbek.jpg" },
+      { name: "hottentot", local: "Hottentot", size: 22, bag: 10, bait: "red bait / prawn / mussel", emoji: "🐠", photo: "hottentot.jpg" },
+      { name: "roman", local: "Roman", size: 30, bag: 2, bait: "chokka / sard", emoji: "🔴", photo: "roman.jpg" },
+      { name: "dageraad", local: "Dageraad", size: 40, bag: 1, bait: "chokka / red bait", emoji: "🌅", photo: "dageraad.jpg" },
+      { name: "santer", local: "Santer", size: 30, bag: 5, bait: "chokka strips / sard", emoji: "🩶", photo: "santer.jpg" },
+      { name: "elf", local: "Elf", size: 30, bag: 4, bait: "sard / spoon / plug", emoji: "⚡", photo: "elf.jpg" },
+      { name: "bonito", local: "Bonnies", size: 0, bag: 10, bait: "feather / spoon / small lure", emoji: "💨", photo: "bonnies.jpg" },
+      { name: "poensie", local: "Poensie", size: 0, bag: 10, bait: "chokka / sard", emoji: "🪝", photo: "poensie.jpg" },
+      { name: "carpenter", local: "Silverfish", size: 35, bag: 4, bait: "chokka strips / sard", emoji: "🥈", photo: "silverfish.jpg" },
+      { name: "stumpnose", local: "Miss Lucy", size: 30, bag: 1, bait: "chokka / sard", emoji: "💗", photo: "miss-lucy.jpg" },
+      { name: "rockcod", local: "Yellowbelly", size: 60, bag: 1, bait: "chokka / sard", emoji: "🪨", photo: "yellowbelly.jpg" }
     ];
 
     let currentLat = "";
@@ -555,6 +503,13 @@
       btn.addEventListener('click', () => openTab(btn.getAttribute('data-tab')));
     });
 
+    function fishImgHtml(f, cls, fallbackCls){
+      return `
+        <img src="${f.photo}" alt="${f.local}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="${fallbackCls}">${f.emoji}</div>
+      `;
+    }
+
     function renderFish(list = fishData){
       const box = document.getElementById('fishGrid');
       box.innerHTML = '';
@@ -569,8 +524,7 @@
         d.className = 'fish-card';
         d.innerHTML = `
           <div class="fish-photo">
-            <img src="${f.photo}" alt="${f.local}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="fish-fallback" style="display:none;">${f.emoji}</div>
+            ${fishImgHtml(f, 'fish-photo', 'fish-fallback')}
           </div>
           <div class="fish-body">
             <div class="fish-title">${f.local}</div>
@@ -588,11 +542,9 @@
       d.innerHTML = `
         <div class="detail-hero">
           <div class="detail-photo">
-            <img src="${f.photo}" alt="${f.local}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="detail-fallback" style="display:none;">${f.emoji}</div>
+            ${fishImgHtml(f, 'detail-photo', 'detail-fallback')}
           </div>
           <h3>${f.local}</h3>
-          <div class="small">Tap back om terug te gaan.</div>
         </div>
 
         <div class="pill-grid">
@@ -661,16 +613,8 @@
 
       if (!spots.length) {
         box.innerHTML = `<div class="small">Nog geen saved spots nie.</div>`;
-        document.getElementById('lastSavedSpot').innerHTML = "Nog niks gestoor nie.";
         return;
       }
-
-      const last = spots[spots.length - 1];
-      document.getElementById('lastSavedSpot').innerHTML = `
-        <strong>${last.name}</strong><br>
-        <span class="small">${last.lat}, ${last.lon}</span><br><br>
-        ${last.note || ""}
-      `;
 
       box.innerHTML = spots.map(s => `
         <div class="spot">
@@ -715,7 +659,7 @@
       if (!name) return;
 
       const noteField = document.getElementById('spotNote').value.trim();
-      const note = noteField || prompt("Nota?") || "";
+      const note = noteField || "";
 
       const spots = getSavedSpots();
       spots.push({ name, lat: currentLat, lon: currentLon, note });
